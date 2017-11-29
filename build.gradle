@@ -44,7 +44,6 @@ dependencies {
 	compile 'com.google.code.gson:gson:2.8.0'
 
 	compile 'org.springframework.boot:spring-boot-starter-jdbc'
-	compile 'com.zaxxer:HikariCP:2.6.1'
 	compile 'org.flywaydb:flyway-core:4.0.3'
 	runtime 'org.postgresql:postgresql:9.4.1212'
 
@@ -61,8 +60,4 @@ dependencies {
 
 	testRuntime 'org.apache.logging.log4j:log4j-api:2.8.1'
 	testRuntime 'org.apache.logging.log4j:log4j-core:2.8.1'
-}
-
-bootRun {
-	args = ['--spring.profiles.active=development', '-Dlogging.configuration=']
 }
