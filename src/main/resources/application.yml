@@ -1,0 +1,25 @@
+spring.http.converters.preferred-json-mapper: gson
+logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+management:
+  info:
+    git:
+      mode: full
+  security:
+    enabled: false
+
+---
+
+spring:
+  profiles: development
+
+jdbc:
+  host: localhost
+  port: 5432
+  database: postgres
+  username: postgres
+  password:
+
+elasticsearch:
+  host: localhost
+  port: 9300
