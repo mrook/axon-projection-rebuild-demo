@@ -3,6 +3,7 @@ package org.demo.configuration;
 import org.axonframework.common.transaction.NoTransactionManager;
 import org.axonframework.common.transaction.TransactionManager;
 import org.axonframework.config.EventHandlingConfiguration;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventProcessor;
 import org.axonframework.eventhandling.ListenerInvocationErrorHandler;
 import org.axonframework.eventhandling.LoggingErrorHandler;
@@ -31,6 +32,7 @@ import javax.annotation.PostConstruct;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Configuration
@@ -57,7 +59,11 @@ public class ProjectionsConfiguration {
 			RebuildableProjection rebuildableProjection = aClass.getAnnotation(RebuildableProjection.class);
 
 			if (rebuildableProjection.rebuild()) {
-				String name = aClass.getName() + "/" + rebuildableProjection.version();
+				ProcessingGroup processingGroup = aClass.getAnnotation(ProcessingGroup.class);
+
+				String name = Optional.ofNullable(processingGroup).map(ProcessingGroup::value)
+					.orElse(aClass.getName() + "/" + rebuildableProjection.version());
+
 				eventHandlingConfiguration.assignHandlersMatching(
 					name,
 					Integer.MAX_VALUE,

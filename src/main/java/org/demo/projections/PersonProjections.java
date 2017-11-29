@@ -1,6 +1,7 @@
 package org.demo.projections;
 
 import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.demo.shared.RebuildableProjection;
 import org.elasticsearch.action.get.GetResponse;
@@ -20,12 +21,11 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 @Repository
 @RebuildableProjection(version = "1", rebuild = true)
+@Slf4j
 public class PersonProjections extends IndexProjections {
 	private final Client client;
 
 	private final Gson gson;
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	public PersonProjections(Client client, Gson gson) throws IOException {
@@ -44,7 +44,7 @@ public class PersonProjections extends IndexProjections {
 
 	private void createPersonIndex(IndicesAdminClient indicesClient) throws IOException {
 		if (!indicesClient.prepareExists(index()).execute().actionGet().isExists()) {
-			logger.info(String.format("creating index %s for people", index()));
+			log.info(String.format("creating index %s for people", index()));
 
 			indicesClient.prepareCreate(index()).addMapping(PERSON_TYPE,
 					jsonBuilder().startObject()
