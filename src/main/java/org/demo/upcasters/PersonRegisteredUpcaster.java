@@ -7,8 +7,8 @@ import org.demo.domain.PersonRegistered;
 public class PersonRegisteredUpcaster extends SimpleXMLUpcaster {
 	public PersonRegisteredUpcaster() {
 		super(
-				new SimpleSerializedType(PersonRegistered.class.getTypeName(), null),
-				new SimpleSerializedType(PersonRegistered.class.getTypeName(), "1")
+			new SimpleSerializedType(PersonRegistered.class.getTypeName(), null),
+			new SimpleSerializedType(PersonRegistered.class.getTypeName(), "1")
 		);
 	}
 

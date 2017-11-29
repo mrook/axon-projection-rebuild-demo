@@ -17,7 +17,13 @@ public abstract class SimpleXMLUpcaster extends XMLUpcaster {
 
 	@Override
 	public final Stream<IntermediateEventRepresentation> upcast(Stream<IntermediateEventRepresentation> intermediateRepresentations) {
-		return intermediateRepresentations.map(evt -> evt.upcastPayload(getTypeProduced(), Document.class, this::doUpcast));
+		return intermediateRepresentations.map(evt -> {
+			if (evt.getType().equals(getTypeConsumed())) {
+				return evt.upcastPayload(getTypeProduced(), Document.class, this::doUpcast);
+			} else {
+				return evt;
+			}
+		});
 	}
 
 	protected abstract Document doUpcast(Document document);
