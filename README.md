@@ -10,6 +10,8 @@ Rebuilding is done using the Tracking Event Processor component. For more inform
 - https://www.michielrook.nl/2017/09/using-tracking-processors-replay-events-axon-framework-3/
 - https://docs.axonframework.org/part3/event-processing.html#event-processors
 
+*This is a proof of concept and probably needs significant cleanup. It could also stop working with future Axon updates.*
+
 # Prerequisities
 
 - Docker
