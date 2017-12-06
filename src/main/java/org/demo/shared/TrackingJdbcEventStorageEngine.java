@@ -18,9 +18,10 @@ import static org.axonframework.common.jdbc.JdbcUtils.executeQuery;
 
 public class TrackingJdbcEventStorageEngine extends JdbcEventStorageEngine {
 	public TrackingJdbcEventStorageEngine(Serializer serializer, EventUpcaster upcasterChain, PersistenceExceptionResolver persistenceExceptionResolver,
-										  Integer batchSize, ConnectionProvider connectionProvider, TransactionManager transactionManager, Class<?> dataType,
-										  EventSchema schema, Integer maxGapOffset, Long lowestGlobalSequence) {
-		super(serializer, upcasterChain, persistenceExceptionResolver, batchSize, connectionProvider, transactionManager, dataType, schema, maxGapOffset,
+										  Serializer eventSerializer, Integer batchSize, ConnectionProvider connectionProvider,
+										  TransactionManager transactionManager, Class<?> dataType, EventSchema schema, Integer maxGapOffset,
+										  Long lowestGlobalSequence) {
+		super(serializer, upcasterChain, persistenceExceptionResolver, eventSerializer, batchSize, connectionProvider, transactionManager, dataType, schema, maxGapOffset,
 				lowestGlobalSequence);
 	}
 

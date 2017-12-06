@@ -14,6 +14,7 @@ import org.axonframework.eventhandling.tokenstore.inmemory.InMemoryTokenStore;
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.axonframework.messaging.StreamableMessageSource;
 import org.demo.shared.ProgressTrackingEventProcessor;
+import org.demo.shared.ProgressTrackingMessageSource;
 import org.demo.shared.RebuildableProjection;
 import org.demo.shared.TrackingJdbcEventStorageEngine;
 import org.elasticsearch.client.Client;
@@ -75,20 +76,19 @@ public class ProjectionsConfiguration {
 	}
 
 	private void registerTrackingProcessor(String name) {
-		eventHandlingConfiguration.registerEventProcessor(name, (conf, n, handlers) ->
-				buildTrackingEventProcessor(conf, name, handlers, org.axonframework.config.Configuration::eventBus));
+		eventHandlingConfiguration.registerEventProcessor(name, (conf, n, handlers) -> {
+			return buildTrackingEventProcessor(conf, name, handlers);
+		});
 	}
 
-	private EventProcessor buildTrackingEventProcessor(org.axonframework.config.Configuration conf, String name, List<?> handlers,
-													   Function<org.axonframework.config.Configuration,
-															   StreamableMessageSource<TrackedEventMessage<?>>> source) {
+	private EventProcessor buildTrackingEventProcessor(org.axonframework.config.Configuration conf, String name, List<?> handlers) {
 		return new ProgressTrackingEventProcessor(name, new SimpleEventHandlerInvoker(handlers,
 				conf.parameterResolverFactory(),
 				conf.getComponent(
 						ListenerInvocationErrorHandler.class,
 						LoggingErrorHandler::new)),
 				(TrackingJdbcEventStorageEngine) eventStorageEngine,
-				source.apply(conf),
+				new ProgressTrackingMessageSource(conf.eventBus()),
 				conf.getComponent(TokenStore.class, InMemoryTokenStore::new),
 				conf.getComponent(TransactionManager.class, NoTransactionManager::instance),
 				conf.messageMonitor(EventProcessor.class, name));

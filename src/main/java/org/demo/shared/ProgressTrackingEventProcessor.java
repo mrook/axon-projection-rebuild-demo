@@ -6,15 +6,15 @@ import org.axonframework.common.ReflectionUtils;
 import org.axonframework.common.transaction.TransactionManager;
 import org.axonframework.eventhandling.EventHandlerInvoker;
 import org.axonframework.eventhandling.EventMessage;
+import org.axonframework.eventhandling.Segment;
 import org.axonframework.eventhandling.TrackedEventMessage;
 import org.axonframework.eventhandling.TrackingEventProcessor;
 import org.axonframework.eventhandling.tokenstore.TokenStore;
 import org.axonframework.eventsourcing.eventstore.GapAwareTrackingToken;
 import org.axonframework.eventsourcing.eventstore.TrackedEventData;
 import org.axonframework.messaging.StreamableMessageSource;
+import org.axonframework.messaging.unitofwork.UnitOfWork;
 import org.axonframework.monitoring.MessageMonitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.Duration;
@@ -25,6 +25,7 @@ import java.util.List;
 public class ProgressTrackingEventProcessor extends TrackingEventProcessor {
 	private final TrackingJdbcEventStorageEngine trackingJdbcEventStorageEngine;
 	private volatile Instant lastEventTimestamp;
+	private volatile UnitOfWork lastUnitOfWork;
 
 	public ProgressTrackingEventProcessor(String name, EventHandlerInvoker eventHandlerInvoker,
 										  TrackingJdbcEventStorageEngine trackingJdbcEventStorageEngine,
@@ -42,11 +43,14 @@ public class ProgressTrackingEventProcessor extends TrackingEventProcessor {
 	}
 
 	@Override
-	protected void process(List<? extends EventMessage<?>> eventMessages) throws Exception {
-		super.process(eventMessages);
+	protected void processInUnitOfWork(List<? extends EventMessage<?>> eventMessages,
+									   UnitOfWork<? extends EventMessage<?>> unitOfWork,
+									   Segment segment) throws Exception {
+		super.processInUnitOfWork(eventMessages, unitOfWork, segment);
 
 		if (eventMessages.size() > 0) {
 			lastEventTimestamp = eventMessages.get(0).getTimestamp();
+			lastUnitOfWork = unitOfWork;
 
 			Status status = getStatus();
 
@@ -57,7 +61,7 @@ public class ProgressTrackingEventProcessor extends TrackingEventProcessor {
 
 	public Status getStatus() {
 		try {
-			GapAwareTrackingToken lastToken = getLastToken();
+			GapAwareTrackingToken lastToken = getLastToken(lastUnitOfWork);
 
 			if (lastToken == null) {
 				return new Status(true, 100, 0);
@@ -77,8 +81,9 @@ public class ProgressTrackingEventProcessor extends TrackingEventProcessor {
 		return new Status(false, 0, Integer.MAX_VALUE);
 	}
 
-	private GapAwareTrackingToken getLastToken() throws NoSuchFieldException {
-		return ReflectionUtils.getFieldValue(TrackingEventProcessor.class.getDeclaredField("lastToken"), this);
+	private GapAwareTrackingToken getLastToken(UnitOfWork unitOfWork) throws NoSuchFieldException {
+		String lastTokenResourceKey = ReflectionUtils.getFieldValue(TrackingEventProcessor.class.getDeclaredField("lastTokenResourceKey"), this);
+		return (GapAwareTrackingToken) unitOfWork.getResource(lastTokenResourceKey);
 	}
 
 	@Value

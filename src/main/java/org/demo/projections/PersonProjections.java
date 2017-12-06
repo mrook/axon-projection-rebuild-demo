@@ -7,6 +7,7 @@ import org.demo.shared.RebuildableProjection;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.demo.domain.PersonRegistered;
 import java.io.IOException;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import static org.elasticsearch.common.xcontent.XContentType.JSON;
 
 @Repository
 @RebuildableProjection(version = "1", rebuild = true)
@@ -65,7 +67,7 @@ public class PersonProjections extends IndexProjections {
 	public void onPersonRegistered(PersonRegistered event) {
 		Person person = new Person(event.getPersonId(), event.getName());
 
-		client.prepareIndex(index(), PERSON_TYPE).setId(event.getPersonId()).setSource(gson.toJson(person)).get();
+		client.prepareIndex(index(), PERSON_TYPE).setId(event.getPersonId()).setSource(gson.toJson(person), JSON).get();
 	}
 
 	public Person findByPersonId(String personId) {

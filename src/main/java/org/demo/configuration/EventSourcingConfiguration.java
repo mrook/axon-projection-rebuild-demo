@@ -64,7 +64,7 @@ public class EventSourcingConfiguration {
 		ConnectionProvider connectionProvider = new DataSourceConnectionProvider(dataSource);
 		TransactionManager transactionManager = new SpringTransactionManager(platformTransactionManager);
 
-		return new TrackingJdbcEventStorageEngine(null, upcasterChain(), null, null, connectionProvider,
+		return new TrackingJdbcEventStorageEngine(null, upcasterChain(), null, null,null, connectionProvider,
 				transactionManager, byte[].class, eventSchema(EVENT_TABLE_VERSION), null, null);
 	}
 }
