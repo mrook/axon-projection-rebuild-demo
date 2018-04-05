@@ -1,7 +1,7 @@
 Rebuilding projections with Axon Framework
 ==========================================
 
-This is a simple app to demonstrate how to rebuild projections (read models) in Axon Framework (3.x).
+This is a simple app to demonstrate how to rebuild projections (read models) in Axon Framework (3.2).
 
 The app has a very simple domain: Persons can be registered (through a controller), and there is a single projection which can be rebuilt. The status / progress of rebuilds can be tracked.
 
@@ -36,4 +36,4 @@ $ curl http://localhost:8080/rebuild-status
 
 You should see something like:
 
-`{"org.demo.projections.PersonProjections/1":{"ready":true,"progress":100,"timeBehindInMillis":0}}`
+`{"org.demo.projections.PersonProjections/1":{"0":{"segment":{"segmentId":0,"mask":0},"caughtUp":true,"trackingToken":{"index":1,"gaps":[]}}}}`

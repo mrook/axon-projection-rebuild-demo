@@ -7,16 +7,13 @@ import org.dom4j.Document;
 import java.util.stream.Stream;
 
 public abstract class SimpleXMLUpcaster extends XMLUpcaster {
-	public SimpleXMLUpcaster(SerializedType consumes, SerializedType typeProduced) {
-		super(consumes, typeProduced);
-	}
-
-	public SerializedType getTypeProduced() {
-		return super.getTypeProduced();
+	public SimpleXMLUpcaster(SerializedType typeConsumed, SerializedType typeProduced) {
+		super(typeConsumed, typeProduced);
 	}
 
 	@Override
-	public final Stream<IntermediateEventRepresentation> upcast(Stream<IntermediateEventRepresentation> intermediateRepresentations) {
+	public final Stream<IntermediateEventRepresentation> upcast(
+		Stream<IntermediateEventRepresentation> intermediateRepresentations) {
 		return intermediateRepresentations.map(evt -> {
 			if (evt.getType().equals(getTypeConsumed())) {
 				return evt.upcastPayload(getTypeProduced(), Document.class, this::doUpcast);

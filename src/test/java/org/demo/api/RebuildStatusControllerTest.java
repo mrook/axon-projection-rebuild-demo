@@ -3,6 +3,7 @@ package org.demo.api;
 import org.axonframework.common.ReflectionUtils;
 import org.axonframework.config.EventHandlingConfiguration;
 import org.axonframework.eventhandling.EventProcessor;
+import org.axonframework.eventhandling.TrackingEventProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -11,8 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.demo.shared.ProgressTrackingEventProcessor;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -31,7 +30,7 @@ public class RebuildStatusControllerTest {
 	EventHandlingConfiguration eventHandlingConfiguration;
 
 	@Mock
-	ProgressTrackingEventProcessor processor;
+	TrackingEventProcessor processor;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -39,7 +38,6 @@ public class RebuildStatusControllerTest {
 	@Test
 	public void shouldGetRebuildStatusFromAProcessor() throws Exception {
 		when(processor.getName()).thenReturn("PROCESSOR");
-		when(processor.getStatus()).thenReturn(processor.new Status(true, 100, 0));
 
 		List<EventProcessor> processors = Collections.singletonList(processor);
 		Field field = EventHandlingConfiguration.class.getDeclaredField("initializedProcessors");
@@ -51,6 +49,6 @@ public class RebuildStatusControllerTest {
 				.andExpect(content().json("{}"));
 
 		verify(processor).getName();
-		verify(processor).getStatus();
+		verify(processor).processingStatus();
 	}
 }

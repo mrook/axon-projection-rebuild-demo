@@ -17,7 +17,7 @@ public abstract class IndexProjections {
 
 	protected abstract String indexName();
 
-	public final String index() {
+	public String index() {
 		if (version().isEmpty()) {
 			return indexName();
 		} else {

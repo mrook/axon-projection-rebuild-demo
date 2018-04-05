@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.demo.domain.RegisterPerson;
 import org.demo.projections.Person;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -52,7 +54,7 @@ public class HelloControllerTest {
 
 	@Test
 	public void shouldNotRecreatePerson() throws Exception {
-		when(personProjections.findByName("world")).thenReturn(new Person(PersonEvents.PERSON_ID, "world"));
+		when(personProjections.findByName("world")).thenReturn(Optional.of(new Person(PersonEvents.PERSON_ID, "world")));
 
 		mockMvc
 				.perform(get("/hello"))

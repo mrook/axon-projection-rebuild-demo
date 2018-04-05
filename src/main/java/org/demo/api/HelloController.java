@@ -2,6 +2,7 @@ package org.demo.api;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.common.IdentifierFactory;
+import org.demo.projections.Person;
 import org.demo.projections.PersonProjections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +31,19 @@ public class HelloController {
 		logger = LoggerFactory.getLogger(getClass());
 	}
 
+@GetMapping("person/{personId}")
+public String getName(@PathVariable("personId") String personId) throws PersonNotFoundException {
+	return personProjections.findByPersonId(personId).map(Person::getName)
+		.orElseThrow(PersonNotFoundException::new);
+}
+
 	@GetMapping("hello")
 	public String greet(@RequestParam(value = "name", required = false) String name) {
 		name = Optional.ofNullable(name).orElse("world");
 
 		logger.info("greeting {}", name);
 
-		boolean first = (personProjections.findByName(name) == null);
+		boolean first = (!personProjections.findByName(name).isPresent());
 
 		if (first) {
 			commandGateway.sendAndWait(new RegisterPerson(identifierFactory.generateIdentifier(), name, "from the frontend"));

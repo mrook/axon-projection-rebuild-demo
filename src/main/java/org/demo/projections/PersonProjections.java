@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.demo.domain.PersonRegistered;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.common.xcontent.XContentType.JSON;
@@ -70,16 +71,16 @@ public class PersonProjections extends IndexProjections {
 		client.prepareIndex(index(), PERSON_TYPE).setId(event.getPersonId()).setSource(gson.toJson(person), JSON).get();
 	}
 
-	public Person findByPersonId(String personId) {
+	public Optional<Person> findByPersonId(String personId) {
 		GetResponse response = client.prepareGet(index(), PERSON_TYPE, personId).get();
 
-		return response.isExists() ? gson.fromJson(response.getSourceAsString(), Person.class) : null;
+		return response.isExists() ? Optional.of(gson.fromJson(response.getSourceAsString(), Person.class)) : Optional.empty();
 	}
 
-	public Person findByName(String name) {
+	public Optional<Person> findByName(String name) {
 		SearchHits hits = client.prepareSearch(index()).setTypes(PERSON_TYPE).setQuery(QueryBuilders.termQuery("name", name)).get().getHits();
 
-		return (hits.getTotalHits() == 0L) ? null : gson.fromJson(hits.getHits()[0].getSourceAsString(), Person.class);
+		return (hits.getTotalHits() == 0L) ? Optional.empty() : Optional.of(gson.fromJson(hits.getHits()[0].getSourceAsString(), Person.class));
 	}
 
 	public final static String PERSON_INDEX = "demo.people";

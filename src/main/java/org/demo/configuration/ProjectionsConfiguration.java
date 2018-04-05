@@ -8,13 +8,9 @@ import org.axonframework.eventhandling.EventProcessor;
 import org.axonframework.eventhandling.ListenerInvocationErrorHandler;
 import org.axonframework.eventhandling.LoggingErrorHandler;
 import org.axonframework.eventhandling.SimpleEventHandlerInvoker;
-import org.axonframework.eventhandling.TrackedEventMessage;
 import org.axonframework.eventhandling.tokenstore.TokenStore;
 import org.axonframework.eventhandling.tokenstore.inmemory.InMemoryTokenStore;
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
-import org.axonframework.messaging.StreamableMessageSource;
-import org.demo.shared.ProgressTrackingEventProcessor;
-import org.demo.shared.ProgressTrackingMessageSource;
 import org.demo.shared.RebuildableProjection;
 import org.demo.shared.TrackingJdbcEventStorageEngine;
 import org.elasticsearch.client.Client;
@@ -34,7 +30,6 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Configuration
 public class ProjectionsConfiguration {
@@ -50,47 +45,51 @@ public class ProjectionsConfiguration {
 				.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(host, port)));
 	}
 
-	@PostConstruct
-	public void startTrackingProjections() throws ClassNotFoundException, InterruptedException {
-		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
-		scanner.addIncludeFilter(new AnnotationTypeFilter(RebuildableProjection.class));
+@PostConstruct
+public void startTrackingProjections() throws ClassNotFoundException {
+	ClassPathScanningCandidateComponentProvider scanner =
+		new ClassPathScanningCandidateComponentProvider(false);
+	scanner.addIncludeFilter(new AnnotationTypeFilter(RebuildableProjection.class));
 
-		for (BeanDefinition bd : scanner.findCandidateComponents("org.demo")) {
-			Class<?> aClass = Class.forName(bd.getBeanClassName());
-			RebuildableProjection rebuildableProjection = aClass.getAnnotation(RebuildableProjection.class);
+	for (BeanDefinition bd : scanner.findCandidateComponents("org.demo")) {
+		Class<?> aClass = Class.forName(bd.getBeanClassName());
+		RebuildableProjection rebuildableProjection = aClass.getAnnotation(RebuildableProjection.class);
 
-			if (rebuildableProjection.rebuild()) {
-				ProcessingGroup processingGroup = aClass.getAnnotation(ProcessingGroup.class);
-
-				String name = Optional.ofNullable(processingGroup).map(ProcessingGroup::value)
-					.orElse(aClass.getName() + "/" + rebuildableProjection.version());
-
-				eventHandlingConfiguration.assignHandlersMatching(
-					name,
-					Integer.MAX_VALUE,
-					(eventHandler) -> aClass.isAssignableFrom(eventHandler.getClass()));
-
-				registerTrackingProcessor(name);
-			}
+		if (rebuildableProjection.rebuild()) {
+			registerRebuildableProjection(aClass, rebuildableProjection);
 		}
 	}
+}
 
-	private void registerTrackingProcessor(String name) {
-		eventHandlingConfiguration.registerEventProcessor(name, (conf, n, handlers) -> {
-			return buildTrackingEventProcessor(conf, name, handlers);
-		});
-	}
+private void registerRebuildableProjection(Class<?> aClass, RebuildableProjection rebuildableProjection) {
+	ProcessingGroup processingGroup = aClass.getAnnotation(ProcessingGroup.class);
 
-	private EventProcessor buildTrackingEventProcessor(org.axonframework.config.Configuration conf, String name, List<?> handlers) {
-		return new ProgressTrackingEventProcessor(name, new SimpleEventHandlerInvoker(handlers,
-				conf.parameterResolverFactory(),
-				conf.getComponent(
-						ListenerInvocationErrorHandler.class,
-						LoggingErrorHandler::new)),
-				(TrackingJdbcEventStorageEngine) eventStorageEngine,
-				new ProgressTrackingMessageSource(conf.eventBus()),
-				conf.getComponent(TokenStore.class, InMemoryTokenStore::new),
-				conf.getComponent(TransactionManager.class, NoTransactionManager::instance),
-				conf.messageMonitor(EventProcessor.class, name));
-	}
+	String name = Optional.ofNullable(processingGroup).map(ProcessingGroup::value)
+		.orElse(aClass.getName() + "/" + rebuildableProjection.version());
+
+	eventHandlingConfiguration.assignHandlersMatching(
+		name,
+		Integer.MAX_VALUE,
+		(eventHandler) -> aClass.isAssignableFrom(eventHandler.getClass()));
+
+	eventHandlingConfiguration.registerTrackingProcessor(name);
+}
+
+//	private void registerTrackingProcessor(String name) {
+//		eventHandlingConfiguration.registerEventProcessor(name,
+//			(conf, n, handlers) -> buildTrackingEventProcessor(conf, name, handlers));
+//	}
+//
+//	private EventProcessor buildTrackingEventProcessor(org.axonframework.config.Configuration conf, String name, List<?> handlers) {
+//		return new ProgressTrackingEventProcessor(name, new SimpleEventHandlerInvoker(handlers,
+//				conf.parameterResolverFactory(),
+//				conf.getComponent(
+//						ListenerInvocationErrorHandler.class,
+//						LoggingErrorHandler::new)),
+//				(TrackingJdbcEventStorageEngine) eventStorageEngine,
+//				new ProgressTrackingMessageSource(conf.eventBus()),
+//				conf.getComponent(TokenStore.class, InMemoryTokenStore::new),
+//				conf.getComponent(TransactionManager.class, NoTransactionManager::instance),
+//				conf.messageMonitor(EventProcessor.class, name));
+//	}
 }
