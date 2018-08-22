@@ -40,7 +40,7 @@ public class HelloControllerTest {
 
 	@Test
 	public void shouldGreetWithName() throws Exception {
-		when(personProjections.findByName("operator")).thenReturn(null);
+		when(personProjections.findByName("operator")).thenReturn(Optional.empty());
 
 		when(identifierFactory.generateIdentifier()).thenReturn(PersonEvents.PERSON_ID);
 
