@@ -1,17 +1,17 @@
 package org.demo;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.common.IdentifierFactory;
 import org.demo.domain.RegisterPerson;
+import org.demo.projections.PersonProjections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.demo.projections.PersonProjections;
 
 @Component
-@Log4j
+@Log4j2
 public class InitialData {
 	private final CommandGateway commandGateway;
 	private final IdentifierFactory identifierFactory;

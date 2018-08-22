@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.7.RELEASE'
+		springBootVersion = '2.0.4.RELEASE'
 	}
 
 	repositories {
@@ -13,12 +13,14 @@ buildscript {
 
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+		classpath "com.github.ben-manes:gradle-versions-plugin:0.20.0"
 	}
 }
 
 apply plugin: 'org.springframework.boot'
-
-project.version = System.properties['buildNumber'] ?: 'dev'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java'
+apply plugin: 'com.github.ben-manes.versions'
 
 repositories {
 	mavenCentral()
@@ -32,7 +34,8 @@ configurations {
 }
 
 dependencies {
-	compileOnly "org.projectlombok:lombok:1.16.14"
+	compile 'org.projectlombok:lombok:1.18.2'
+	annotationProcessor 'org.projectlombok:lombok:1.18.2'
 
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile 'org.springframework.boot:spring-boot-starter-actuator'
@@ -41,23 +44,23 @@ dependencies {
 	compile 'org.axonframework:axon-spring-boot-starter:3.2'
 	compile 'dom4j:dom4j:1.6.1'
 
-	compile 'com.google.code.gson:gson:2.8.0'
+	compile 'com.google.code.gson:gson:2.8.5'
 
 	compile 'org.springframework.boot:spring-boot-starter-jdbc'
-	compile 'org.flywaydb:flyway-core:4.0.3'
-	runtime 'org.postgresql:postgresql:9.4.1212'
+	compile 'org.flywaydb:flyway-core:5.1.4'
+	runtime 'org.postgresql:postgresql:42.2.4'
 
 	compile 'org.elasticsearch:elasticsearch:5.6.0'
 	compile 'org.elasticsearch.client:transport:5.6.0'
 
-	runtime 'org.apache.logging.log4j:log4j-to-slf4j:2.8'
+	runtime 'org.apache.logging.log4j:log4j-to-slf4j:2.11.1'
 
-	compile 'org.apache.commons:commons-lang3:3.5'
+	compile 'org.apache.commons:commons-lang3:3.8'
 
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	testCompile 'org.axonframework:axon-test:3.2'
-	testCompile "org.projectlombok:lombok:1.16.14"
+	testCompile "org.projectlombok:lombok:1.18.2"
 
-	testRuntime 'org.apache.logging.log4j:log4j-api:2.8.1'
-	testRuntime 'org.apache.logging.log4j:log4j-core:2.8.1'
+	testRuntime 'org.apache.logging.log4j:log4j-api:2.11.1'
+	testRuntime 'org.apache.logging.log4j:log4j-core:2.11.1'
 }
