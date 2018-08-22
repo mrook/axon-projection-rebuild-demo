@@ -2,7 +2,7 @@ version: '2'
 
 services:
   elasticsearch:
-    image: elasticsearch:5.6-alpine
+    image: elasticsearch:6.3-alpine
     ports:
       - 9300:9300
       - 9200:9200

@@ -6,7 +6,7 @@ import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.demo.shared.RebuildableProjection;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class ProjectionsConfiguration {
 	@Bean
 	public Client client(@Value("${elasticsearch.host}") String host, @Value("${elasticsearch.port}") Integer port) throws UnknownHostException {
 		return new PreBuiltTransportClient(Settings.EMPTY)
-			.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(host, port)));
+			.addTransportAddress(new TransportAddress(new InetSocketAddress(host, port)));
 	}
 
 	@PostConstruct
