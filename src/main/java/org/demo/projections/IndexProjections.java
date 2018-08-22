@@ -2,8 +2,8 @@ package org.demo.projections;
 
 import org.demo.shared.RebuildableProjection;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
+import javax.annotation.PostConstruct;
 
 public abstract class IndexProjections {
 	protected String version() {

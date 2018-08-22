@@ -1,18 +1,9 @@
 package org.demo.configuration;
 
-import org.axonframework.common.transaction.NoTransactionManager;
-import org.axonframework.common.transaction.TransactionManager;
 import org.axonframework.config.EventHandlingConfiguration;
 import org.axonframework.config.ProcessingGroup;
-import org.axonframework.eventhandling.EventProcessor;
-import org.axonframework.eventhandling.ListenerInvocationErrorHandler;
-import org.axonframework.eventhandling.LoggingErrorHandler;
-import org.axonframework.eventhandling.SimpleEventHandlerInvoker;
-import org.axonframework.eventhandling.tokenstore.TokenStore;
-import org.axonframework.eventhandling.tokenstore.inmemory.InMemoryTokenStore;
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.demo.shared.RebuildableProjection;
-import org.demo.shared.TrackingJdbcEventStorageEngine;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -25,11 +16,10 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import javax.annotation.PostConstruct;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Optional;
+import javax.annotation.PostConstruct;
 
 @Configuration
 public class ProjectionsConfiguration {
@@ -42,38 +32,38 @@ public class ProjectionsConfiguration {
 	@Bean
 	public Client client(@Value("${elasticsearch.host}") String host, @Value("${elasticsearch.port}") Integer port) throws UnknownHostException {
 		return new PreBuiltTransportClient(Settings.EMPTY)
-				.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(host, port)));
+			.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(host, port)));
 	}
 
-@PostConstruct
-public void startTrackingProjections() throws ClassNotFoundException {
-	ClassPathScanningCandidateComponentProvider scanner =
-		new ClassPathScanningCandidateComponentProvider(false);
-	scanner.addIncludeFilter(new AnnotationTypeFilter(RebuildableProjection.class));
+	@PostConstruct
+	public void startTrackingProjections() throws ClassNotFoundException {
+		ClassPathScanningCandidateComponentProvider scanner =
+			new ClassPathScanningCandidateComponentProvider(false);
+		scanner.addIncludeFilter(new AnnotationTypeFilter(RebuildableProjection.class));
 
-	for (BeanDefinition bd : scanner.findCandidateComponents("org.demo")) {
-		Class<?> aClass = Class.forName(bd.getBeanClassName());
-		RebuildableProjection rebuildableProjection = aClass.getAnnotation(RebuildableProjection.class);
+		for (BeanDefinition bd : scanner.findCandidateComponents("org.demo")) {
+			Class<?> aClass = Class.forName(bd.getBeanClassName());
+			RebuildableProjection rebuildableProjection = aClass.getAnnotation(RebuildableProjection.class);
 
-		if (rebuildableProjection.rebuild()) {
-			registerRebuildableProjection(aClass, rebuildableProjection);
+			if (rebuildableProjection.rebuild()) {
+				registerRebuildableProjection(aClass, rebuildableProjection);
+			}
 		}
 	}
-}
 
-private void registerRebuildableProjection(Class<?> aClass, RebuildableProjection rebuildableProjection) {
-	ProcessingGroup processingGroup = aClass.getAnnotation(ProcessingGroup.class);
+	private void registerRebuildableProjection(Class<?> aClass, RebuildableProjection rebuildableProjection) {
+		ProcessingGroup processingGroup = aClass.getAnnotation(ProcessingGroup.class);
 
-	String name = Optional.ofNullable(processingGroup).map(ProcessingGroup::value)
-		.orElse(aClass.getName() + "/" + rebuildableProjection.version());
+		String name = Optional.ofNullable(processingGroup).map(ProcessingGroup::value)
+			.orElse(aClass.getName() + "/" + rebuildableProjection.version());
 
-	eventHandlingConfiguration.assignHandlersMatching(
-		name,
-		Integer.MAX_VALUE,
-		(eventHandler) -> aClass.isAssignableFrom(eventHandler.getClass()));
+		eventHandlingConfiguration.assignHandlersMatching(
+			name,
+			Integer.MAX_VALUE,
+			(eventHandler) -> aClass.isAssignableFrom(eventHandler.getClass()));
 
-	eventHandlingConfiguration.registerTrackingProcessor(name);
-}
+		eventHandlingConfiguration.registerTrackingProcessor(name);
+	}
 
 //	private void registerTrackingProcessor(String name) {
 //		eventHandlingConfiguration.registerEventProcessor(name,

@@ -44,9 +44,9 @@ public class RebuildStatusControllerTest {
 		ReflectionUtils.setFieldValue(field, eventHandlingConfiguration, processors);
 
 		mockMvc
-				.perform(get("/rebuild-status"))
-				.andExpect(status().isOk())
-				.andExpect(content().json("{}"));
+			.perform(get("/rebuild-status"))
+			.andExpect(status().isOk())
+			.andExpect(content().json("{}"));
 
 		verify(processor).getName();
 		verify(processor).processingStatus();

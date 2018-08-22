@@ -1,8 +1,8 @@
 package org.demo.upcasters;
 
 import org.axonframework.serialization.SimpleSerializedType;
-import org.dom4j.Document;
 import org.demo.domain.PersonRegistered;
+import org.dom4j.Document;
 
 public class PersonRegisteredUpcaster extends SimpleXMLUpcaster {
 	public PersonRegisteredUpcaster() {

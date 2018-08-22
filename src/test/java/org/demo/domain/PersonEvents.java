@@ -1,7 +1,5 @@
 package org.demo.domain;
 
-import org.demo.domain.PersonRegistered;
-
 public class PersonEvents {
 	public static PersonRegistered personRegistered() {
 		return new PersonRegistered(PERSON_ID, NAME, REASON);

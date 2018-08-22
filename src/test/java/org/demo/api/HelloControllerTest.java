@@ -3,6 +3,8 @@ package org.demo.api;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.common.IdentifierFactory;
 import org.demo.domain.PersonEvents;
+import org.demo.domain.RegisterPerson;
+import org.demo.projections.Person;
 import org.demo.projections.PersonProjections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.demo.domain.RegisterPerson;
-import org.demo.projections.Person;
 
 import java.util.Optional;
 
@@ -45,9 +45,9 @@ public class HelloControllerTest {
 		when(identifierFactory.generateIdentifier()).thenReturn(PersonEvents.PERSON_ID);
 
 		mockMvc
-				.perform(get("/hello").param("name", "operator"))
-				.andExpect(status().isOk())
-				.andExpect(content().json("\"Hello operator\""));
+			.perform(get("/hello").param("name", "operator"))
+			.andExpect(status().isOk())
+			.andExpect(content().json("\"Hello operator\""));
 
 		verify(commandGateway).sendAndWait(new RegisterPerson(PersonEvents.PERSON_ID, "operator", "from the frontend"));
 	}
@@ -57,9 +57,9 @@ public class HelloControllerTest {
 		when(personProjections.findByName("world")).thenReturn(Optional.of(new Person(PersonEvents.PERSON_ID, "world")));
 
 		mockMvc
-				.perform(get("/hello"))
-				.andExpect(status().isOk())
-				.andExpect(content().json("\"Hello again world\""));
+			.perform(get("/hello"))
+			.andExpect(status().isOk())
+			.andExpect(content().json("\"Hello again world\""));
 
 		verifyZeroInteractions(commandGateway, identifierFactory);
 	}

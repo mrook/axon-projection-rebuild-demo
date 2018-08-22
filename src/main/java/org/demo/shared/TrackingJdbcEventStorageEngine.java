@@ -22,7 +22,7 @@ public class TrackingJdbcEventStorageEngine extends JdbcEventStorageEngine {
 										  TransactionManager transactionManager, Class<?> dataType, EventSchema schema, Integer maxGapOffset,
 										  Long lowestGlobalSequence) {
 		super(serializer, upcasterChain, persistenceExceptionResolver, eventSerializer, batchSize, connectionProvider, transactionManager, dataType, schema, maxGapOffset,
-				lowestGlobalSequence);
+			lowestGlobalSequence);
 	}
 
 	public TrackedEventData<?> getLatestTrackedEvent() throws SQLException {
@@ -41,7 +41,7 @@ public class TrackingJdbcEventStorageEngine extends JdbcEventStorageEngine {
 
 	private PreparedStatement getLatestTrackedEvent(Connection connection) throws SQLException {
 		String sql = "SELECT " + trackedEventFields() + " FROM " + schema().domainEventTable() +
-				" ORDER BY " + schema().globalIndexColumn() + " DESC LIMIT 1";
+			" ORDER BY " + schema().globalIndexColumn() + " DESC LIMIT 1";
 
 		return connection.prepareStatement(sql);
 	}

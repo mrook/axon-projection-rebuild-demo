@@ -1,7 +1,7 @@
 package org.demo.projections;
 
-import org.demo.domain.PersonEvents;
 import org.demo.ProjectionsTest;
+import org.demo.domain.PersonEvents;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

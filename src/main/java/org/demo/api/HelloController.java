@@ -2,13 +2,16 @@ package org.demo.api;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.common.IdentifierFactory;
+import org.demo.domain.RegisterPerson;
 import org.demo.projections.Person;
 import org.demo.projections.PersonProjections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.demo.domain.RegisterPerson;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
@@ -31,11 +34,11 @@ public class HelloController {
 		logger = LoggerFactory.getLogger(getClass());
 	}
 
-@GetMapping("person/{personId}")
-public String getName(@PathVariable("personId") String personId) throws PersonNotFoundException {
-	return personProjections.findByPersonId(personId).map(Person::getName)
-		.orElseThrow(PersonNotFoundException::new);
-}
+	@GetMapping("person/{personId}")
+	public String getName(@PathVariable("personId") String personId) throws PersonNotFoundException {
+		return personProjections.findByPersonId(personId).map(Person::getName)
+			.orElseThrow(PersonNotFoundException::new);
+	}
 
 	@GetMapping("hello")
 	public String greet(@RequestParam(value = "name", required = false) String name) {

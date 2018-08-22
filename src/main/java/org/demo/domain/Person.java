@@ -14,7 +14,8 @@ public class Person {
 
 	private String name;
 
-	private Person() {}
+	private Person() {
+	}
 
 	@CommandHandler
 	public Person(RegisterPerson command) {

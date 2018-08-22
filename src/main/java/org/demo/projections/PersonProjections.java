@@ -3,18 +3,15 @@ package org.demo.projections;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
+import org.demo.domain.PersonRegistered;
 import org.demo.shared.RebuildableProjection;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.demo.domain.PersonRegistered;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -50,16 +47,16 @@ public class PersonProjections extends IndexProjections {
 			log.info(String.format("creating index %s for people", index()));
 
 			indicesClient.prepareCreate(index()).addMapping(PERSON_TYPE,
-					jsonBuilder().startObject()
-							.startObject("properties")
-							.startObject("personId")
-							.field("type", "keyword")
-							.endObject()
-							.startObject("name")
-							.field("type", "keyword")
-							.endObject()
-							.endObject()
-							.endObject()
+				jsonBuilder().startObject()
+					.startObject("properties")
+					.startObject("personId")
+					.field("type", "keyword")
+					.endObject()
+					.startObject("name")
+					.field("type", "keyword")
+					.endObject()
+					.endObject()
+					.endObject()
 			).get();
 		}
 	}

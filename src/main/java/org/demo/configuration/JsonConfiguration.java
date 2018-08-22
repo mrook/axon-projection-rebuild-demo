@@ -10,7 +10,7 @@ public class JsonConfiguration {
 	@Bean
 	public Gson gson() {
 		return new GsonBuilder()
-				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-				.create();
+			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+			.create();
 	}
 }

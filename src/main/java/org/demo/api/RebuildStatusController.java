@@ -28,7 +28,7 @@ public class RebuildStatusController {
 		Field field = EventHandlingConfiguration.class.getDeclaredField("initializedProcessors");
 		List<EventProcessor> initializedProcessors = ReflectionUtils.getFieldValue(field, eventHandlingConfiguration);
 		return initializedProcessors.stream()
-				.filter(processor -> processor instanceof TrackingEventProcessor)
-				.collect(Collectors.toMap(EventProcessor::getName, processor -> ((TrackingEventProcessor) processor).processingStatus()));
+			.filter(processor -> processor instanceof TrackingEventProcessor)
+			.collect(Collectors.toMap(EventProcessor::getName, processor -> ((TrackingEventProcessor) processor).processingStatus()));
 	}
 }

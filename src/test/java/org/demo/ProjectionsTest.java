@@ -5,14 +5,14 @@ import org.axonframework.eventhandling.GenericEventMessage;
 import org.axonframework.eventhandling.SimpleEventBus;
 import org.axonframework.eventhandling.SimpleEventHandlerInvoker;
 import org.axonframework.eventhandling.SubscribingEventProcessor;
+import org.demo.configuration.TestProjectionsConfiguration;
+import org.demo.shared.Indices;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.demo.configuration.TestProjectionsConfiguration;
-import org.demo.shared.Indices;
 
 import java.time.Clock;
 import java.time.Instant;
