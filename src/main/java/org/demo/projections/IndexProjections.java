@@ -26,5 +26,5 @@ public abstract class IndexProjections {
 	}
 
 	@PostConstruct
-	abstract protected void createIndex() throws IOException;
+	protected abstract void createIndex() throws IOException;
 }

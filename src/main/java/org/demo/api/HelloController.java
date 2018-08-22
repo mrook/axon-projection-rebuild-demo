@@ -35,9 +35,9 @@ public class HelloController {
 	}
 
 	@GetMapping("person/{personId}")
-	public String getName(@PathVariable("personId") String personId) throws PersonNotFoundException {
+	public String getName(@PathVariable("personId") String personId) throws PersonNotFound {
 		return personProjections.findByPersonId(personId).map(Person::getName)
-			.orElseThrow(PersonNotFoundException::new);
+			.orElseThrow(PersonNotFound::new);
 	}
 
 	@GetMapping("hello")

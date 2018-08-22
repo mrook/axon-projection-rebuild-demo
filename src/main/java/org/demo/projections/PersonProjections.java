@@ -80,6 +80,6 @@ public class PersonProjections extends IndexProjections {
 		return (hits.getTotalHits() == 0L) ? Optional.empty() : Optional.of(gson.fromJson(hits.getHits()[0].getSourceAsString(), Person.class));
 	}
 
-	public final static String PERSON_INDEX = "demo.people";
-	public final static String PERSON_TYPE = "person";
+	private static final String PERSON_INDEX = "demo.people";
+	private static final String PERSON_TYPE = "person";
 }

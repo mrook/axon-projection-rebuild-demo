@@ -37,9 +37,11 @@ public class PersonRegisteredUpcasterTest {
 		SerializedObject<String> serializedPayload = new SimpleSerializedObject<>(serializedData, String.class,
 			new SimpleSerializedType(PersonRegistered.class.getTypeName(), null));
 
-		EventData<?> eventData = new TrackedDomainEventData<Object>(new GlobalSequenceTrackingToken(10), new GenericDomainEventEntry<>("test", "aggregateId", 0, "eventId", Instant.now(),
-			serializedPayload.getType().getName(), serializedPayload.getType().getRevision(), serializedData,
-			serializer.serialize(MetaData.emptyInstance(), String.class)));
+		EventData<?> eventData = new TrackedDomainEventData<Object>(
+			new GlobalSequenceTrackingToken(10),
+			new GenericDomainEventEntry<>("test", "aggregateId", 0, "eventId", Instant.now(),
+				serializedPayload.getType().getName(), serializedPayload.getType().getRevision(), serializedData,
+				serializer.serialize(MetaData.emptyInstance(), String.class)));
 
 		PersonRegisteredUpcaster upcaster = new PersonRegisteredUpcaster();
 

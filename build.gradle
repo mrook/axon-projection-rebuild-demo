@@ -20,7 +20,35 @@ buildscript {
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
 apply plugin: 'com.github.ben-manes.versions'
+
+checkstyle {
+	toolVersion "7.6.1"
+	configFile rootProject.file("config/checkstyle/checkstyle.xml")
+}
+checkstyleMain {
+	source ='src/main/java'
+}
+checkstyleTest {
+	source ='src/test/java'
+}
+
+findbugs {
+	ignoreFailures = false
+	toolVersion = "3.0.1"
+	sourceSets = [sourceSets.main]
+	excludeFilter = file("config/findbugs/excludeFilter.xml")
+	reportsDir = file("$project.buildDir/reports/findbugs")
+	effort = "max"
+}
+tasks.withType(FindBugs) {
+	reports {
+		xml.enabled false
+		html.enabled true
+	}
+}
 
 repositories {
 	mavenCentral()

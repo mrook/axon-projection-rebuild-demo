@@ -21,8 +21,8 @@ public class TrackingJdbcEventStorageEngine extends JdbcEventStorageEngine {
 										  Serializer eventSerializer, Integer batchSize, ConnectionProvider connectionProvider,
 										  TransactionManager transactionManager, Class<?> dataType, EventSchema schema, Integer maxGapOffset,
 										  Long lowestGlobalSequence) {
-		super(serializer, upcasterChain, persistenceExceptionResolver, eventSerializer, batchSize, connectionProvider, transactionManager, dataType, schema, maxGapOffset,
-			lowestGlobalSequence);
+		super(serializer, upcasterChain, persistenceExceptionResolver, eventSerializer, batchSize, connectionProvider, transactionManager,
+			dataType, schema, maxGapOffset, lowestGlobalSequence);
 	}
 
 	public TrackedEventData<?> getLatestTrackedEvent() throws SQLException {
