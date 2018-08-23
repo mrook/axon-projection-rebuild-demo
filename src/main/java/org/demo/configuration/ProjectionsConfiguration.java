@@ -31,7 +31,10 @@ public class ProjectionsConfiguration {
 
 	@Bean
 	public Client client(@Value("${elasticsearch.host}") String host, @Value("${elasticsearch.port}") Integer port) throws UnknownHostException {
-		return new PreBuiltTransportClient(Settings.EMPTY)
+		Settings settings = Settings.builder()
+			.put("client.transport.ignore_cluster_name", true)
+			.build();
+		return new PreBuiltTransportClient(settings)
 			.addTransportAddress(new TransportAddress(new InetSocketAddress(host, port)));
 	}
 

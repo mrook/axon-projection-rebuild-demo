@@ -47,7 +47,7 @@ public class EventSourcingConfiguration {
 	}
 
 	@Bean
-	public TokenStore tokenStore(DataSource dataSource, Serializer serializer) throws SQLException {
+	public TokenStore tokenStore(DataSource dataSource, Serializer serializer) {
 		ConnectionProvider connectionProvider = new DataSourceConnectionProvider(dataSource);
 
 		return new JdbcTokenStore(connectionProvider, serializer, tokenSchema(), Duration.ofSeconds(10),

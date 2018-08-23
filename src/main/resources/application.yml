@@ -1,5 +1,6 @@
 spring.http.converters.preferred-json-mapper: gson
 logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false
 
 jdbc:
   host: localhost
