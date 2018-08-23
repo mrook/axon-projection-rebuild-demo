@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.lang.management.ManagementFactory;
-import java.sql.SQLException;
 import java.time.Duration;
 import javax.sql.DataSource;
 

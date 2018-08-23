@@ -1,6 +1,7 @@
 package org.demo.configuration;
 
 import org.axonframework.config.EventHandlingConfiguration;
+import org.axonframework.config.EventProcessingConfiguration;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.demo.shared.RebuildableProjection;
@@ -25,6 +26,9 @@ import javax.annotation.PostConstruct;
 public class ProjectionsConfiguration {
 	@Autowired
 	private EventHandlingConfiguration eventHandlingConfiguration;
+
+	@Autowired
+	private EventProcessingConfiguration eventProcessingConfiguration;
 
 	@Autowired
 	private EventStorageEngine eventStorageEngine;
@@ -65,7 +69,7 @@ public class ProjectionsConfiguration {
 			Integer.MAX_VALUE,
 			(eventHandler) -> aClass.isAssignableFrom(eventHandler.getClass()));
 
-		eventHandlingConfiguration.registerTrackingProcessor(name);
+		eventProcessingConfiguration.registerTrackingEventProcessor(name);
 	}
 
 //	private void registerTrackingProcessor(String name) {
