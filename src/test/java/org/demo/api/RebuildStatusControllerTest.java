@@ -1,8 +1,10 @@
 package org.demo.api;
 
 import org.axonframework.common.ReflectionUtils;
+import org.axonframework.config.Component;
+import org.axonframework.config.Configuration;
+import org.axonframework.config.DefaultConfigurer;
 import org.axonframework.config.EventHandlingConfiguration;
-import org.axonframework.eventhandling.EventProcessor;
 import org.axonframework.eventhandling.TrackingEventProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +41,9 @@ public class RebuildStatusControllerTest {
 	public void shouldGetRebuildStatusFromAProcessor() throws Exception {
 		when(processor.getName()).thenReturn("PROCESSOR");
 
-		List<EventProcessor> processors = Collections.singletonList(processor);
-		Field field = EventHandlingConfiguration.class.getDeclaredField("initializedProcessors");
+		Configuration config = DefaultConfigurer.defaultConfiguration().buildConfiguration();
+		List<Component<Object>> processors = Collections.singletonList(new Component<>(config, "eventHandler", x -> processor));
+		Field field = EventHandlingConfiguration.class.getDeclaredField("eventHandlers");
 		ReflectionUtils.setFieldValue(field, eventHandlingConfiguration, processors);
 
 		mockMvc

@@ -1,8 +1,9 @@
 package org.demo.api;
 
 import org.axonframework.common.ReflectionUtils;
+import org.axonframework.config.Component;
 import org.axonframework.config.EventHandlingConfiguration;
-import org.axonframework.eventhandling.EventProcessor;
+import org.axonframework.eventhandling.AbstractEventProcessor;
 import org.axonframework.eventhandling.EventTrackerStatus;
 import org.axonframework.eventhandling.TrackingEventProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,13 @@ public class RebuildStatusController {
 
 	@GetMapping("rebuild-status")
 	public Map<String, Map<Integer, EventTrackerStatus>> rebuildStatus() throws NoSuchFieldException {
-		Field field = EventHandlingConfiguration.class.getDeclaredField("initializedProcessors");
-		List<EventProcessor> initializedProcessors = ReflectionUtils.getFieldValue(field, eventHandlingConfiguration);
-		return initializedProcessors.stream()
+		Field field = EventHandlingConfiguration.class.getDeclaredField("eventHandlers");
+		List<Component<Object>> eventHandlers = ReflectionUtils.getFieldValue(field, eventHandlingConfiguration);
+		return eventHandlers.stream()
+			.map(component -> (AbstractEventProcessor) component.get())
 			.filter(processor -> processor instanceof TrackingEventProcessor)
-			.collect(Collectors.toMap(EventProcessor::getName, processor -> ((TrackingEventProcessor) processor).processingStatus()));
+			.collect(Collectors.toMap(AbstractEventProcessor::getName,
+				processor -> ((TrackingEventProcessor) processor).processingStatus()
+			));
 	}
 }
