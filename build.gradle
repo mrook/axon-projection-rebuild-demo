@@ -14,6 +14,7 @@ buildscript {
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
 		classpath "com.github.ben-manes:gradle-versions-plugin:0.20.0"
+		classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
 	}
 }
 
@@ -21,7 +22,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
 apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
+apply plugin: 'com.github.spotbugs'
 apply plugin: 'com.github.ben-manes.versions'
 
 checkstyle {
@@ -35,15 +36,15 @@ checkstyleTest {
 	source ='src/test/java'
 }
 
-findbugs {
+spotbugs {
 	ignoreFailures = false
-	toolVersion = "3.0.1"
+	toolVersion = "3.1.6"
 	sourceSets = [sourceSets.main]
-	excludeFilter = file("config/findbugs/excludeFilter.xml")
-	reportsDir = file("$project.buildDir/reports/findbugs")
+	excludeFilter = file("config/spotbugs/excludeFilter.xml")
+	reportsDir = file("$project.buildDir/reports/spotbugs")
 	effort = "max"
 }
-tasks.withType(FindBugs) {
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
 	reports {
 		xml.enabled false
 		html.enabled true
