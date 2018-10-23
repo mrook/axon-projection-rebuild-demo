@@ -1,7 +1,7 @@
 Rebuilding projections with Axon Framework
 ==========================================
 
-This is a simple app to demonstrate how to rebuild projections (read models) in Axon Framework (3.3).
+This is a simple app to demonstrate how to rebuild projections (read models) in Axon Framework (4.0).
 
 The app has a very simple domain: Persons can be registered (through a controller), and there is a single projection which can be rebuilt. The status / progress of rebuilds can be tracked.
 
@@ -16,7 +16,7 @@ Rebuilding is done using the Tracking Event Processor component. For more inform
 
 - Docker
 - Docker Compose
-- JDK 8
+- JDK 8+
 
 # To run
 
