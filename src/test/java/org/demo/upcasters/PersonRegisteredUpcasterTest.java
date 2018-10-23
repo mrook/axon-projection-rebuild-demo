@@ -1,9 +1,9 @@
 package org.demo.upcasters;
 
-import org.axonframework.eventsourcing.eventstore.EventData;
-import org.axonframework.eventsourcing.eventstore.GenericDomainEventEntry;
-import org.axonframework.eventsourcing.eventstore.GlobalSequenceTrackingToken;
-import org.axonframework.eventsourcing.eventstore.TrackedDomainEventData;
+import org.axonframework.eventhandling.EventData;
+import org.axonframework.eventhandling.GenericDomainEventEntry;
+import org.axonframework.eventhandling.GlobalSequenceTrackingToken;
+import org.axonframework.eventhandling.TrackedDomainEventData;
 import org.axonframework.messaging.MetaData;
 import org.axonframework.serialization.SerializedObject;
 import org.axonframework.serialization.Serializer;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertFalse;
 public class PersonRegisteredUpcasterTest {
 	@Test
 	public void shouldUpcastOldPersonRegisteredEvent() {
-		Serializer serializer = new XStreamSerializer();
+		Serializer serializer = XStreamSerializer.builder().build();
 		Map<String, ?> metaData = Collections.emptyMap();
 
 		String serializedData = String.format("<org.demo.domain.PersonRegistered><personId>%s</personId><name>%s</name></org.demo.domain.PersonRegistered>",

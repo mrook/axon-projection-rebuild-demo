@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.0.4.RELEASE'
+		springBootVersion = '2.0.6.RELEASE'
 	}
 
 	repositories {
@@ -14,7 +14,7 @@ buildscript {
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
 		classpath "com.github.ben-manes:gradle-versions-plugin:0.20.0"
-		classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
+		classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.5"
 	}
 }
 
@@ -70,25 +70,25 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-actuator'
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	compile 'org.axonframework:axon-spring-boot-starter:3.3.5'
+	compile 'org.axonframework:axon-spring-boot-starter:4.0'
 	compile 'dom4j:dom4j:1.6.1'
 
 	compile 'com.google.code.gson:gson:2.8.5'
 
 	compile 'org.springframework.boot:spring-boot-starter-jdbc'
-	compile 'org.flywaydb:flyway-core:5.1.4'
-	runtime 'org.postgresql:postgresql:42.2.4'
+	compile 'org.flywaydb:flyway-core:5.2.0'
+	runtime 'org.postgresql:postgresql:42.2.5'
 
-	compile 'org.elasticsearch:elasticsearch:6.3.2'
-	compile 'org.elasticsearch.client:transport:6.3.2'
-	compile 'org.elasticsearch.plugin:transport-netty4-client:6.3.2'
+	compile 'org.elasticsearch:elasticsearch:6.4.2'
+	compile 'org.elasticsearch.client:transport:6.4.2'
+	compile 'org.elasticsearch.plugin:transport-netty4-client:6.4.2'
 
 	runtime 'org.apache.logging.log4j:log4j-to-slf4j:2.11.1'
 
-	compile 'org.apache.commons:commons-lang3:3.8'
+	compile 'org.apache.commons:commons-lang3:3.8.1'
 
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.axonframework:axon-test:3.3.5'
+	testCompile 'org.axonframework:axon-test:4.0'
 	testCompile "org.projectlombok:lombok:1.18.2"
 
 	testRuntime 'org.apache.logging.log4j:log4j-api:2.11.1'

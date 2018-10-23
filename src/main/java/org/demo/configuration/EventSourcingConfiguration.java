@@ -4,20 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.axonframework.common.IdentifierFactory;
 import org.axonframework.common.jdbc.ConnectionProvider;
 import org.axonframework.common.jdbc.DataSourceConnectionProvider;
-import org.axonframework.common.transaction.TransactionManager;
 import org.axonframework.eventhandling.tokenstore.TokenStore;
 import org.axonframework.eventhandling.tokenstore.jdbc.JdbcTokenStore;
 import org.axonframework.eventhandling.tokenstore.jdbc.TokenSchema;
-import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.axonframework.eventsourcing.eventstore.jdbc.EventSchema;
 import org.axonframework.serialization.Serializer;
 import org.axonframework.serialization.upcasting.event.EventUpcaster;
-import org.axonframework.spring.messaging.unitofwork.SpringTransactionManager;
-import org.demo.shared.TrackingJdbcEventStorageEngine;
 import org.demo.upcasters.PersonRegisteredUpcaster;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
@@ -34,10 +29,10 @@ public class EventSourcingConfiguration {
 	}
 
 	private EventSchema eventSchema(int version) {
-		return EventSchema.builder().withEventTable(String.format("events_%d", version)).withSnapshotTable("snapshot_events")
-			.withGlobalIndexColumn("id").withAggregateIdentifierColumn("aggregate_id").withSequenceNumberColumn("sequence_number").withTypeColumn("type")
-			.withEventIdentifierColumn("event_id").withMetaDataColumn("metadata").withPayloadColumn("payload").withPayloadRevisionColumn("payload_revision")
-			.withPayloadTypeColumn("payload_type").withTimestampColumn("timestamp").build();
+		return EventSchema.builder().eventTable(String.format("events_%d", version)).snapshotTable("snapshot_events")
+			.globalIndexColumn("id").aggregateIdentifierColumn("aggregate_id").sequenceNumberColumn("sequence_number").typeColumn("type")
+			.eventIdentifierColumn("event_id").metaDataColumn("metadata").payloadColumn("payload").payloadRevisionColumn("payload_revision")
+			.payloadTypeColumn("payload_type").timestampColumn("timestamp").build();
 	}
 
 	private TokenSchema tokenSchema() {
@@ -49,20 +44,12 @@ public class EventSourcingConfiguration {
 	public TokenStore tokenStore(DataSource dataSource, Serializer serializer) {
 		ConnectionProvider connectionProvider = new DataSourceConnectionProvider(dataSource);
 
-		return new JdbcTokenStore(connectionProvider, serializer, tokenSchema(), Duration.ofSeconds(10),
-			ManagementFactory.getRuntimeMXBean().getName(), byte[].class);
+		return JdbcTokenStore.builder().connectionProvider(connectionProvider).serializer(serializer)
+			.claimTimeout(Duration.ofSeconds(10)).schema(tokenSchema()).contentType(byte[].class)
+			.nodeId(ManagementFactory.getRuntimeMXBean().getName()).build();
 	}
 
 	private EventUpcaster upcasterChain() {
 		return new PersonRegisteredUpcaster();
-	}
-
-	@Bean
-	public EventStorageEngine eventStorageEngine(DataSource dataSource, PlatformTransactionManager platformTransactionManager) {
-		ConnectionProvider connectionProvider = new DataSourceConnectionProvider(dataSource);
-		TransactionManager transactionManager = new SpringTransactionManager(platformTransactionManager);
-
-		return new TrackingJdbcEventStorageEngine(null, upcasterChain(), null, null, null, connectionProvider,
-			transactionManager, byte[].class, eventSchema(EVENT_TABLE_VERSION), null, null);
 	}
 }

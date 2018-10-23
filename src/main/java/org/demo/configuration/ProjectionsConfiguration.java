@@ -1,7 +1,6 @@
 package org.demo.configuration;
 
-import org.axonframework.config.EventHandlingConfiguration;
-import org.axonframework.config.EventProcessingConfiguration;
+import org.axonframework.config.EventProcessingModule;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.demo.shared.RebuildableProjection;
@@ -25,10 +24,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class ProjectionsConfiguration {
 	@Autowired
-	private EventHandlingConfiguration eventHandlingConfiguration;
-
-	@Autowired
-	private EventProcessingConfiguration eventProcessingConfiguration;
+	private EventProcessingModule eventProcessingModule;
 
 	@Autowired
 	private EventStorageEngine eventStorageEngine;
@@ -64,29 +60,11 @@ public class ProjectionsConfiguration {
 		String name = Optional.ofNullable(processingGroup).map(ProcessingGroup::value)
 			.orElse(aClass.getName() + "/" + rebuildableProjection.version());
 
-		eventHandlingConfiguration.assignHandlersMatching(
-			name,
-			Integer.MAX_VALUE,
-			(eventHandler) -> aClass.isAssignableFrom(eventHandler.getClass()));
-
-		eventProcessingConfiguration.registerTrackingEventProcessor(name);
-	}
-
-//	private void registerTrackingProcessor(String name) {
-//		eventHandlingConfiguration.registerEventProcessor(name,
-//			(conf, n, handlers) -> buildTrackingEventProcessor(conf, name, handlers));
-//	}
+//		eventProcessingModule.assignHandlersMatching(
+//			name,
+//			Integer.MAX_VALUE,
+//			(eventHandler) -> aClass.isAssignableFrom(eventHandler.getClass()));
 //
-//	private EventProcessor buildTrackingEventProcessor(org.axonframework.config.Configuration conf, String name, List<?> handlers) {
-//		return new ProgressTrackingEventProcessor(name, new SimpleEventHandlerInvoker(handlers,
-//				conf.parameterResolverFactory(),
-//				conf.getComponent(
-//						ListenerInvocationErrorHandler.class,
-//						LoggingErrorHandler::new)),
-//				(TrackingJdbcEventStorageEngine) eventStorageEngine,
-//				new ProgressTrackingMessageSource(conf.eventBus()),
-//				conf.getComponent(TokenStore.class, InMemoryTokenStore::new),
-//				conf.getComponent(TransactionManager.class, NoTransactionManager::instance),
-//				conf.messageMonitor(EventProcessor.class, name));
-//	}
+		eventProcessingModule.registerTrackingEventProcessor(name);
+	}
 }

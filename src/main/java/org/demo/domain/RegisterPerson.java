@@ -1,7 +1,7 @@
 package org.demo.domain;
 
 import lombok.Data;
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Data
 public class RegisterPerson {

@@ -33,9 +33,12 @@ public abstract class ProjectionsTest<P> {
 
 	@Before
 	public void createEventBus() {
-		eventBus = new SimpleEventBus();
+		eventBus = SimpleEventBus.builder().build();
 
-		eventProcessor = new SubscribingEventProcessor("listener", new SimpleEventHandlerInvoker(projections), eventBus);
+		eventProcessor = SubscribingEventProcessor.builder().name("listener")
+			.eventHandlerInvoker(SimpleEventHandlerInvoker.builder().eventHandlers(projections).build())
+			.messageSource(eventBus)
+			.build();
 
 		eventProcessor.start();
 	}
