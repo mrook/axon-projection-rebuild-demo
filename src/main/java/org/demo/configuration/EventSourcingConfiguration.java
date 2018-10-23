@@ -7,12 +7,16 @@ import org.axonframework.common.jdbc.DataSourceConnectionProvider;
 import org.axonframework.eventhandling.tokenstore.TokenStore;
 import org.axonframework.eventhandling.tokenstore.jdbc.JdbcTokenStore;
 import org.axonframework.eventhandling.tokenstore.jdbc.TokenSchema;
+import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.axonframework.eventsourcing.eventstore.jdbc.EventSchema;
+import org.axonframework.eventsourcing.eventstore.jdbc.JdbcEventStorageEngine;
 import org.axonframework.serialization.Serializer;
 import org.axonframework.serialization.upcasting.event.EventUpcaster;
+import org.axonframework.spring.messaging.unitofwork.SpringTransactionManager;
 import org.demo.upcasters.PersonRegisteredUpcaster;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
@@ -51,5 +55,13 @@ public class EventSourcingConfiguration {
 
 	private EventUpcaster upcasterChain() {
 		return new PersonRegisteredUpcaster();
+	}
+
+	@Bean
+	public EventStorageEngine eventStorageEngine(DataSource dataSource, PlatformTransactionManager platformTransactionManager) {
+		return JdbcEventStorageEngine.builder().connectionProvider(new DataSourceConnectionProvider(dataSource))
+			.transactionManager(new SpringTransactionManager(platformTransactionManager))
+			.schema(eventSchema(EVENT_TABLE_VERSION)).upcasterChain(upcasterChain())
+			.dataType(byte[].class).build();
 	}
 }
