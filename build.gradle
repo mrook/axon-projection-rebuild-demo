@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.0.6.RELEASE'
+		springBootVersion = '2.1.0.RELEASE'
 	}
 
 	repositories {
@@ -65,14 +65,14 @@ configurations {
 dependencies {
 	runtimeOnly 'javax.xml.bind:jaxb-api'
 
-	compile 'org.projectlombok:lombok:1.18.2'
-	annotationProcessor 'org.projectlombok:lombok:1.18.2'
+	compile 'org.projectlombok:lombok:1.18.4'
+	annotationProcessor 'org.projectlombok:lombok:1.18.4'
 
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile 'org.springframework.boot:spring-boot-starter-actuator'
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	compile 'org.axonframework:axon-spring-boot-starter:4.0', {
+	compile 'org.axonframework:axon-spring-boot-starter:4.0.2', {
 		exclude group:'org.axonframework', module: 'axon-server-connector'
 	}
 	compile 'dom4j:dom4j:1.6.1'
@@ -80,7 +80,7 @@ dependencies {
 	compile 'com.google.code.gson:gson:2.8.5'
 
 	compile 'org.springframework.boot:spring-boot-starter-jdbc'
-	compile 'org.flywaydb:flyway-core:5.2.0'
+	compile 'org.flywaydb:flyway-core:5.2.1'
 	runtime 'org.postgresql:postgresql:42.2.5'
 
 	compile 'org.elasticsearch:elasticsearch:6.4.2'
@@ -92,8 +92,8 @@ dependencies {
 	compile 'org.apache.commons:commons-lang3:3.8.1'
 
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.axonframework:axon-test:4.0'
-	testCompile "org.projectlombok:lombok:1.18.2"
+	testCompile 'org.axonframework:axon-test:4.0.2'
+	testCompile "org.projectlombok:lombok:1.18.4"
 
 	testRuntime 'org.apache.logging.log4j:log4j-api:2.11.1'
 	testRuntime 'org.apache.logging.log4j:log4j-core:2.11.1'
